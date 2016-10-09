@@ -1,0 +1,22 @@
+{
+  "name": "packing-profile-webpack-plugin",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhongzhi107/packing-profile-webpack-plugin.git"
+  },
+  "author": "zhongzhi <zhong.zhi@163.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhongzhi107/packing-profile-webpack-plugin/issues"
+  },
+  "homepage": "https://github.com/zhongzhi107/packing-profile-webpack-plugin#readme",
+  "dependencies": {
+    "object-assign": "^4.1.0"
+  }
+}
