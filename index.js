@@ -12,11 +12,10 @@ var MissingProfileError = require('./MissingProfileError');
  * example: __('CDN_ROOT') or __('my.name')
  */
 function ProfilePlugin(options) {
+	var nodeEnv = process.env.NODE_ENV || 'production';
 	this.options = assign({
-		// profile保存的目录
-		cwd: 'src/profiles',
 		// profile文件名
-		filename: process.env.NODE_ENV || 'production',
+		profile: `src/profiles/${nodeEnv}`,
 		// 获取profile的方法名称
 		functionName: '__',
 		// 找不到值时是否中断webpack编译
@@ -29,7 +28,9 @@ module.exports = ProfilePlugin;
 ProfilePlugin.prototype.apply = function(compiler) {
 	var functionName = this.options.functionName;
 	var failOnMissing = this.options.failOnMissing;
-	var profileFile = path.join(process.cwd(), this.options.cwd, this.options.filename);
+	var profileFile = path.isAbsolute(this.options.profile) ?
+		this.options.profile :
+		path.join(process.cwd(), this.options.profile);
 	var profile = require(profileFile);
 	compiler.plugin('compilation', function(compilation, params) {
 		compilation.dependencyFactories.set(ConstDependency, new NullFactory());
