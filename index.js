@@ -31,7 +31,11 @@ ProfilePlugin.prototype.apply = function(compiler) {
 	var profileFile = path.isAbsolute(this.options.profile) ?
 		this.options.profile :
 		path.join(process.cwd(), this.options.profile);
-	var profile = require(profileFile);
+	try {
+		var profile = require(profileFile);
+	} catch (e) {
+		profile = {};
+	}
 	compiler.plugin('compilation', function(compilation, params) {
 		compilation.dependencyFactories.set(ConstDependency, new NullFactory());
 		compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
