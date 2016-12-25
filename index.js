@@ -39,49 +39,49 @@ ProfilePlugin.prototype.apply = function(compiler) {
 	compiler.plugin('compilation', function(compilation, params) {
 		compilation.dependencyFactories.set(ConstDependency, new NullFactory());
 		compilation.dependencyTemplates.set(ConstDependency, new ConstDependency.Template());
+		params.normalModuleFactory.plugin("parser", function(parser, options) {
+			parser.plugin('call ' + functionName, function(expr) {
+					var param, defaultValue;
+					switch(expr.arguments.length) {
+					case 2:
+						param = this.evaluateExpression(expr.arguments[1]);
+						if(!param.isString()) return;
+						param = param.string;
+						defaultValue = this.evaluateExpression(expr.arguments[0]);
+						if(!defaultValue.isString()) return;
+						defaultValue = defaultValue.string;
+						break;
+					case 1:
+						param = this.evaluateExpression(expr.arguments[0]);
+						if(!param.isString()) return;
+						defaultValue = param = param.string;
+						break;
+					default:
+						return;
+					}
+					// Todo 异常处理
+					var result = byString(profile, defaultValue);
+					if (typeof result == 'undefined') {
+						var error = this.state.module[__dirname];
+						if (!error) {
+							error = this.state.module[__dirname] = new MissingProfileError(this.state.module, param, defaultValue);
+							if (failOnMissing) {
+								this.state.module.errors.push(error);
+							} else {
+								this.state.module.warnings.push(error);
+							}
+						} else if(error.requests.indexOf(param) < 0) {
+							error.add(param, defaultValue);
+						}
+						result = defaultValue;
+					}
+					var dep = new ConstDependency(JSON.stringify(result), expr.range);
+					dep.loc = expr.loc;
+					this.state.current.addDependency(dep);
+					return true;
+				});
+		});
 	});
-	compiler.parser.plugin('call ' + functionName, function(expr) {
-		var param, defaultValue;
-		switch(expr.arguments.length) {
-		case 2:
-			param = this.evaluateExpression(expr.arguments[1]);
-			if(!param.isString()) return;
-			param = param.string;
-			defaultValue = this.evaluateExpression(expr.arguments[0]);
-			if(!defaultValue.isString()) return;
-			defaultValue = defaultValue.string;
-			break;
-		case 1:
-			param = this.evaluateExpression(expr.arguments[0]);
-			if(!param.isString()) return;
-			defaultValue = param = param.string;
-			break;
-		default:
-			return;
-		}
-		// Todo 异常处理
-		// console.log('====', byString(profile, defaultValue));
-		var result = byString(profile, defaultValue);
-		if (typeof result == 'undefined') {
-			var error = this.state.module[__dirname];
-			if (!error) {
-				error = this.state.module[__dirname] = new MissingProfileError(this.state.module, param, defaultValue);
-				if (failOnMissing) {
-					this.state.module.errors.push(error);
-				} else {
-					this.state.module.warnings.push(error);
-				}
-			} else if(error.requests.indexOf(param) < 0) {
-				error.add(param, defaultValue);
-			}
-			result = defaultValue;
-		}
-		var dep = new ConstDependency(JSON.stringify(result), expr.range);
-		dep.loc = expr.loc;
-		this.state.current.addDependency(dep);
-		return true;
-	});
-
 };
 
 /**
@@ -96,6 +96,9 @@ function byString(object, stringKey) {
 	var keysArray = stringKey.split('.');
 	for (var i = 0, length = keysArray.length; i < length; ++i) {
 		var key = keysArray[i];
+
+		console.log('--key:', key);
+		console.log('--object:', object);
 
 		if (key in object) {
 			object = object[key];
