@@ -97,9 +97,6 @@ function byString(object, stringKey) {
 	for (var i = 0, length = keysArray.length; i < length; ++i) {
 		var key = keysArray[i];
 
-		console.log('--key:', key);
-		console.log('--object:', object);
-
 		if (key in object) {
 			object = object[key];
 		} else {
