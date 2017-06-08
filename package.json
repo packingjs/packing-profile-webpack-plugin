@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zhongzhi107/packing-profile-webpack-plugin.git"
+    "url": "git+https://github.com/packingjs/packing-profile-webpack-plugin.git"
   },
   "author": "zhongzhi <zhong.zhi@163.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/zhongzhi107/packing-profile-webpack-plugin/issues"
+    "url": "https://github.com/packingjs/packing-profile-webpack-plugin/issues"
   },
-  "homepage": "https://github.com/zhongzhi107/packing-profile-webpack-plugin#readme",
+  "homepage": "https://github.com/packingjs/packing-profile-webpack-plugin#readme",
   "dependencies": {
     "object-assign": "^4.1.0"
   }
